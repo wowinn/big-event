@@ -14,9 +14,9 @@ import java.util.Map;
 @RequestMapping("/article")
 public class ArticleController {
 
-    @GetMapping("/list")
-    public Result<String> list(/*@RequestHeader(name = "Authorization") String token, HttpServletResponse response*/) {
-        //验证token
+//    @GetMapping("/list")
+//    public Result<String> list(@RequestHeader(name = "Authorization") String token, HttpServletResponse response) {
+//        //验证token
 //        try {
 //            Map<String, Object> claims = JwtUtil.parseToken(token);
 //            return Result.success("article data");
@@ -25,6 +25,11 @@ public class ArticleController {
 //            response.setStatus(401);
 //            return Result.error("未登录");
 //        }
+//    }
+
+    @GetMapping("/list")
+    public Result<String> list() {
+        //验证token
         return Result.success("article data");
     }
 }
