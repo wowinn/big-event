@@ -3,12 +3,12 @@ package com.yangzhou.controller;
 import com.yangzhou.pojo.Category;
 import com.yangzhou.pojo.Result;
 import com.yangzhou.service.CategoryService;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -22,4 +22,29 @@ public class CategoryController {
         categoryService.add(category);
         return Result.success();
     }
+
+    @GetMapping
+    public Result<List<Category>> list() {
+        List<Category> lc = categoryService.list();
+        return Result.success(lc);
+    }
+
+    @GetMapping("/detail")
+    public Result<Category> detail(Integer id) {
+        Category c = categoryService.findById(id);
+        return Result.success(c);
+    }
+
+    @PutMapping
+    public Result update(@RequestBody @Validated(Category.Update.class) Category category) {
+        categoryService.update(category);
+        return Result.success();
+    }
+
+    @DeleteMapping()
+    public Result delete(Integer id) {
+        categoryService.delete(id);
+        return Result.success();
+    }
+
 }
