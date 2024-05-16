@@ -2,7 +2,6 @@ package com.yangzhou.mapper;
 
 import com.yangzhou.pojo.Article;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
