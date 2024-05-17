@@ -14,7 +14,6 @@ public class UpLoadController {
 
     @PostMapping("/upload")
     public Result<String> upload(MultipartFile file) throws Exception {
-        //把文件的内容存储到本地磁盘中
         String originalFilename = file.getOriginalFilename();
         String filename = UUID.randomUUID().toString()+originalFilename.substring(originalFilename.lastIndexOf("."));
         String url = AliOssUtil.upLoadFile(filename, file.getInputStream());
