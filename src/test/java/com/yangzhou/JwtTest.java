@@ -29,9 +29,7 @@ public class JwtTest {
     @Test
     public void testParse() {
         //定义字符串模拟token
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-                ".eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IuW8oOS4iSJ9LCJleHAiOjE3MTU3MTQ1OTF9" +
-                ".1LFxzHMEeNwwYrMyqDTEZ10mF1JutyVGWOA7aB_s5PU";
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IuW8oOS4iSJ9LCJleHAiOjE3MTgyMzc4NzZ9.syY9ZgCHyII2beaXx31QMnGIeaHa2T5Gxu30hXvDo1M";
 
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256("yangzhou")).build();
         DecodedJWT decodedJWT = jwtVerifier.verify(token); //验证token,生成一个解析后的JWT对象

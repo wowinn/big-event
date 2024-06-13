@@ -3,7 +3,6 @@ package com.yangzhou.controller;
 import com.yangzhou.pojo.Category;
 import com.yangzhou.pojo.Result;
 import com.yangzhou.service.CategoryService;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +45,4 @@ public class CategoryController {
         categoryService.delete(id);
         return Result.success();
     }
-
 }

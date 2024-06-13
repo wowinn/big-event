@@ -6,6 +6,9 @@ import com.yangzhou.service.UserService;
 import com.yangzhou.utils.JwtUtil;
 import com.yangzhou.utils.Md5Util;
 import com.yangzhou.utils.ThreadLocalUtil;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +33,12 @@ public class UserController {
     private StringRedisTemplate stringRedisTemplate;
 
     @PostMapping("/register")
-    public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
-
+    public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Email String email, @Pattern(regexp = "^\\S{5,16}$") String password) {
         //查询用户
         User u = userService.findByUserName(username);
         if (u == null) {
             //注册
-            userService.register(username, password);
+            userService.register(username, email, password);
             return Result.success();
         } else {
             //占用
@@ -82,7 +84,7 @@ public class UserController {
     }
 
     @PatchMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam @URL String avatarUrl) {
+    public Result updateAvatar(@RequestParam @URL @NotEmpty String avatarUrl) {
         userService.updateAvatar(avatarUrl);
         return Result.success();
     }
