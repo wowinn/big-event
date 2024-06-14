@@ -2,6 +2,7 @@ package com.yangzhou.controller;
 
 import com.yangzhou.pojo.Result;
 import com.yangzhou.pojo.User;
+import com.yangzhou.service.EmailService;
 import com.yangzhou.service.UserService;
 import com.yangzhou.utils.JwtUtil;
 import com.yangzhou.utils.Md5Util;
@@ -22,6 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.yangzhou.utils.CodeUtil.generateCode;
+import static com.yangzhou.utils.EmailUtil.sendMail;
+
 @RestController
 @RequestMapping("/user")
 @Validated
@@ -31,6 +35,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Email String email, @Pattern(regexp = "^\\S{5,16}$") String password) {
@@ -110,6 +117,56 @@ public class UserController {
         //删除redis中对应的token
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
         operations.getOperations().delete(token);
+        return Result.success();
+    }
+
+    @GetMapping("/findEmail")
+    public Result findPwd(@Email(message = "邮箱地址不合法") String email) {
+        User u = userService.findByUserEmail(email);
+        if(u == null) {
+            return Result.error(email + "未注册");
+        }
+        //查找到注册邮箱， 发送邮箱验证码
+        String code = generateCode();
+
+        //邮件标题
+        String title = "大事件 密码找回";
+        //邮件正文
+        String content = "<html><body><h3>您的邮箱验证码位：</h3><span>" + code + "</span><br><span>注意：邮箱验证码有效期为10分钟</span></body></html>";
+        //发送邮件
+        if(emailService.send(email, title, content)) {
+            //把邮箱和验证码存储到redis中
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+            operations.set(email, code, 10, TimeUnit.MINUTES);
+            return Result.success();
+        }
+        return Result.error("发送邮箱验证码错误");
+    }
+
+    @PostMapping("/resetPwd")
+    public Result resetPwd(@RequestBody Map<String, String> params) {
+        String email = params.get("email");
+        String code = params.get("code");
+        String newPassword = params.get("newPassword");
+        String rePassword = params.get("rePassword");
+
+        if (!StringUtils.hasLength(newPassword) || !StringUtils.hasLength(rePassword)) {
+            return Result.error("缺少必要的参数");
+        }
+        if (!newPassword.equals(rePassword)) {
+            return Result.error("两次填写的新密码不一样");
+        }
+
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        String localCode = operations.get(email);
+        if(localCode == null) {
+            return Result.error("邮箱验证码已失效");
+        }
+        if(!localCode.equals(code)) {
+            return Result.error("邮箱验证码错误");
+        }
+        userService.resetPwd(email, newPassword);
+        operations.getOperations().delete(email);
         return Result.success();
     }
 }

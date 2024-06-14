@@ -19,13 +19,20 @@ public class RedisTest {
     public void testSet() {
         //redis中存储一个键值对
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set("username", "yangzhou");
+//        operations.set("id", "123");
         operations.set("id", "1", 15, TimeUnit.SECONDS);
     }
 
     @Test
     public void testGet() {
         ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        System.out.println(operations.get("username"));
+        System.out.println(operations.get("id"));
+    }
+
+    @Test
+    public void testDelete() {
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete("id");
+        System.out.println(operations.get("id"));
     }
 }

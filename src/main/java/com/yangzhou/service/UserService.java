@@ -17,4 +17,10 @@ public interface UserService {
 
     //更新密码
     void updatePwd(String newPwd);
+
+    //根据邮箱查找用户
+    User findByUserEmail(String email);
+
+    //重置密码
+    void resetPwd(String email, String newPassword);
 }
