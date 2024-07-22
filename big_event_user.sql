@@ -1,0 +1,1 @@
+INSERT INTO big_event.user (id, username, password, nickname, email, user_pic, create_time, update_time) VALUES (1, 'yangzhou', 'e10adc3949ba59abbe56e057f20f883e', 'yzzz', 'gedouju@163.com', 'http://www.114c.com', '2024-05-13 21:27:33', '2024-05-17 16:59:16');
